@@ -1,0 +1,280 @@
+
+Test Automation 
+-------------------
+
+1. Automation Testing 
+-----------------------
+Tester - Instructs the tool and tool will perform Testing operation 
+Tool - Software application which will perform the Testers instructions.
+
+Classification of Automation Tool
+-----------------------------------
+
+1. Functional  - Check the functionality of application 
+
+     Tools for Functional Automation
+------------------------------------------
+1. QTP, UFT, RFT(Rational Functional Tester(VB script), SilkTest, Renorex, TestComplete, Test Sigma, Selenium, Winrunner(TSL), Katalon Studio 
+ 
+2. Non Functional - Performance, Security, reliability, User-friendly 
+   Performance Testing - LoadRunner, Neoload, OctoPerf, Jmeter, OpenSTA, SilkPerfomer, Rational Performance Tester.
+3. Test Management Tool - QCALM, Rational Test Manager, QAMonitor, TestDirector, JIRA.
+
+
+Functional Testing 
+---------------------
+What is the use Learn Selenium
+---------------------------------
+Selenium - Open Source Tool - It can automate only Browser (It can test only WebApplication)
+No Language Dependency - Java, Python, Ruby, JavaScirpt, Kotlin, CSharp.
+Directly Interacting with Browsers.
+3. Andriod, IOS, Windows, Linux, Mac, Solaris
+4. Google Chrome, Mozila Firefox, IE, Edge, Safari, OPera
+5. Parallel Execution
+6. Integration of ANT and Maven 
+7. Generate Report with help of TestNG (Unit Testing Framework)
+--------------------------------------------------------------
+Selenium Limitation 
+----------------------
+By using the POM (Page Object Model Framework) we can overcome this issue (Object Repository)
+
+Selenium Components
+---------------------
+
+Selenium IDE  - Record & PlayBack (useful Regression testing) - Browser Plugin
+Selenium RC  (No Longer Now)
+Selenium WebDriver
+Selenium Gird  (Execute the test with Multiple Environment) 
+
+
+Selenium WebDriver
+--------------------
+Selenium WebDriver Automates Browser, That's it!
+
+What you do with that power is entirely up to you.
+
+What is mean by WebDriver ?
+
+It is an Interface , It contains only method declarations (get(String url), quit(), close(), getTitle(), getPageSource(), getCurrentUrl())
+
+Selenium WebDriver Implementation in Java
+--------------------------------------------
+
+package webdriverImplementation;
+
+public interface WebDriver 
+{
+	public void get(String url);	
+	public void getTitle();
+	public void getPageSource();
+	public void close();
+	public void quit();	 
+
+}
+-------------------------------------------
+package webdriverImplementation;
+
+public class ChromeDriver implements WebDriver
+{
+
+	public void get(String url) {
+		System.out.println("The Application Chrome url is.."+url);		
+	}
+
+	public void getTitle() {		
+		System.out.println("This is the Chrome Title of WebPage"); 		
+	}
+
+	public void getPageSource() {
+		System.out.println("This is the Chrome PageSource of WebPage"); 	
+		
+	}
+
+	public void close() {
+		System.out.println("Chrome Browser Current Window Closed..");
+		
+	}
+
+	 
+	public void quit() {
+		System.out.println("Chrome Browser Session Closed..");
+		
+	}
+
+}
+----------------------------------------------------
+package webdriverImplementation;
+
+public class EdgeDriver implements WebDriver
+{
+
+	public void get(String url) {
+		System.out.println("The Application Edge url is.."+url);		
+	}
+
+	public void getTitle() {		
+		System.out.println("This is the  Edge Title of WebPage"); 		
+	}
+
+	public void getPageSource() {
+		System.out.println("This is the Edge PageSource of WebPage"); 	
+		
+	}
+
+	public void close() {
+		System.out.println("Edge Browser Current Window Closed..");
+		
+	}
+
+	 
+	public void quit() {
+		System.out.println("Edge Browser Session Closed..");
+		
+	}
+
+}
+----------------------------------------------------------------
+package webdriverImplementation;
+
+public class TestWebDriver {
+
+	public static void main(String[] args)
+	{
+		 WebDriver driver = new ChromeDriver();
+		 driver.get("https://petstore.octoperf.com/");
+		 driver.getTitle();
+		 driver.getPageSource();
+		 driver.close();
+		 driver.quit();
+		 
+		 WebDriver driver1 = new EdgeDriver();
+		 driver1.get("https://swagger.io/tools/swagger-ui/");
+		 driver1.getTitle();
+		 driver1.getPageSource();
+		 driver1.close();
+		 driver1.quit();
+
+	}
+
+}
+
+Business Scenario for Test Automation
+---------------------------------------
+Landing Page
+----------------
+
+1. Navigate to "https://petstore.octoperf.com/" with ChromeBrowser and Verify the Current URL is matching with "https://petstore.octoperf.com/"
+2. Verify the Title of WebPage "JpetStore Demo" //*[@id="Content"]/h2
+3. Verify the Welcome message "Welcome to JPetStore 6"
+4. Verify the Enter the Store link is present 
+5. Verify the "Copyright www.mybatis.org" Text is present //*[@id="Content"]/p[2]/sub
+6. Verify the Enter the store link is navigating to HomePage
+ 
+
+Code Snippet
+--------------
+
+package test;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+public class FirstTestScript {
+
+	public static void main(String[] args) throws InterruptedException
+	{
+		// Launch the Chrome Browser..and Navigate to given URL
+		// Object Creating 
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://petstore.octoperf.com/");
+
+		//Validation methods
+		String actualURL = driver.getCurrentUrl();
+		System.out.println("The Current URl is.."+actualURL);
+		String expectedURL = "https://petstore.octoperf.com/";
+
+		// Assertions
+		if(expectedURL.equals(actualURL))
+			System.out.println("URL Matching TestCase Passed..");
+		else
+			System.out.println("URL Not Matching Testcase Failed..");
+
+		String actualTitle = driver.getTitle();
+		System.out.println("The WebPage Title is..."+actualTitle);
+		String expectedTitle = "JPetStore Demo";
+
+		// Assertions
+		if(expectedTitle.equals(actualTitle))
+			System.out.println("WebPage Title Matching TestCase Passed..");
+		else
+			System.out.println("URLWebPage Title Not Matching Testcase Failed..");
+
+		WebElement element = driver.findElement(By.xpath("//*[@id='Content']/h2"));
+        String actualWelcomeMsg = element.getText();
+        System.out.println(actualWelcomeMsg);
+        String exMsg = "Welcome to JPetStore 6";
+        
+        
+        //Assertions
+        if(exMsg.equals(actualWelcomeMsg))
+        	System.out.println("Welcome Message Matching TestCase Passed..");
+        else
+        	System.out.println("Welcome Message Not Matching TestCase Passed..");
+        
+        String copyRightMsg = driver.findElement(By.xpath("//*[@id='Content']/p[2]/sub")).getText();
+        System.out.println(copyRightMsg);
+        String exCpyMsg = "Copyright www.mybatis.org";
+      //Assertions
+        if(exCpyMsg.equals(copyRightMsg))
+        	System.out.println("CopyRight Message Matching TestCase Passed..");
+        else
+        	System.out.println("CopyRight Message Not Matching TestCase Failed..");
+        
+        
+        driver.findElement(By.linkText("Enter the Store")).click();
+        
+        String signInText = driver.findElement(By.linkText("Sign In")).getText();
+        System.out.println(signInText);
+        String expectedValue = "Sign In";
+        
+      //Assertions
+        if(expectedValue.equals(signInText))
+        	System.out.println("Sucessfully Navigated to HomePage TestCase Passed..");
+        else
+        	System.out.println("HomePage Navigation TestCase Failed..");        
+        
+
+		//Will terminate the Entire browser Session 
+		driver.quit();
+
+
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
