@@ -311,6 +311,183 @@ public class VerifyLandingPage // Test Name
 
 }
 
+Identification of Business Scenario 
+--------------------------------------
+Automating a website https://petstore.octoperf.com/ with selenium and TestNG involves creating test scenarios that cover various functionality and user interactions on the website. Here are some of common scenarios you might consider automating.
+
+
+Landing Page
+----------------
+
+1. Navigate to "https://petstore.octoperf.com/" with ChromeBrowser and Verify the Current URL is matching with "https://petstore.octoperf.com/"
+2. Verify the Title of WebPage "JpetStore Demo" //*[@id="Content"]/h2
+3. Verify the Welcome message "Welcome to JPetStore 6"
+4. Verify the Enter the Store link is present 
+5. Verify the "Copyright www.mybatis.org" Text is present //*[@id="Content"]/p[2]/sub
+6. Verify the Enter the store link is navigating to HomePage
+
+Product Home Page
+-----------------------
+
+1. Verify the Sign In functionality with valid Credentials.
+2. Verify Search Functionality (Search for Product )shows relevant information 
+Product Catalog
+Verify the presence of products on the Home Page
+Verify the details of Individual Products
+Choose any of Product (like Fish, Cats...)
+Choose Item id 
+Adding Products to Cart
+Choose Proceed to Checkout
+Provide the relevant payment details 
+Confirm the Billing address
+Verify Order submission "Thank you, your order has been submitted."
+
+Structure of Automation Framework
+--------------------------------------
+1. Object Repository (It contains All Object Details should be stored in common location)
+2. Test Data Management (Test Data needs to be stored in Excel,any data source)
+3. Reporting Feature must be implemented
+4. Utility Libraries needs to created 
+5. Testcase management Needs to be maintained properly 
+6. Browser management Needs to be maintained properly (Suppose working with More then one browser)
+7. Main source code Needs to be maintained properly
+
+Stage1 Coding
+----------------
+package testcases;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.Test;
+
+import browserImplementation.BrowserConfig;
+
+public class VerifyLandingPage
+{
+	BrowserConfig browserconfig;
+	WebDriver driver=null;
+	@Test
+	public void test_LandingPage()
+	{
+		browserconfig = new BrowserConfig();
+		driver = browserconfig.Launch_Chrome();
+		driver.get("https://petstore.octoperf.com/"); // Opening the Application URL 
+		driver.quit(); // Closing Browser Session 
+		
+	}
+
+}
+Browser Configuration 
+-------------------------
+
+package browserImplementation;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class BrowserConfig 
+{
+	WebDriver driver;
+	public WebDriver Launch_Chrome()
+	{
+		  driver = new ChromeDriver(); // Chrome Browser Implementation 
+		  return driver;
+	}
+	public WebDriver Launch_Edge()
+	{
+		  driver = new EdgeDriver(); //Edge Browser Implementation
+		  return driver;
+	}
+	public WebDriver Launch_Firefox()
+	{
+		  driver = new FirefoxDriver(); // Firefox Browser Implementation 
+		  return driver;
+	}
+
+}
+
+Stage2 Coding 
+-----------------
+Implement the Object Repository 
+
+# This is Global Object Repository which contain all object information
+#key and Value pair combination 
+BaseURL=https://petstore.octoperf.com/
+username=mohan
+password=mohan
+
+package objectRepository;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
+public class ObjectRepositoryReader
+{
+	Properties objpro;
+	
+	public ObjectRepositoryReader() throws IOException
+	{
+		String path ="D:\\Clients\\KH\\Walmart\\SeleniumTestAutomation\\com.automation.framework\\ObjectRepository\\object.properties";
+	    FileReader reader = new FileReader(path);
+	    
+	    objpro = new Properties();
+	    objpro.load(reader);
+	    
+	}
+	
+	public String get_BaseURL()
+	{
+		return objpro.getProperty("BaseURL");
+	}
+	
+	
+
+}
+
+
+Refactored Testcase Code 
+---------------------------
+
+package testcases;
+
+import java.io.IOException;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import browserImplementation.BrowserConfig;
+import objectRepository.ObjectRepositoryReader;
+
+public class VerifyLandingPage {
+	BrowserConfig browserconfig;
+	WebDriver driver = null;
+	ObjectRepositoryReader or;
+
+	@BeforeTest
+	public void setUp() throws IOException {
+		browserconfig = new BrowserConfig();
+		or = new ObjectRepositoryReader();
+	}
+
+	@Test
+	public void test_LandingPage() throws IOException {
+
+		driver = browserconfig.Launch_Chrome();
+		or.get_BaseURL();
+	}
+
+	@AfterTest
+	public void tearDown() {
+		driver.quit(); // Closing Browser Session
+	}
+
+}
+
 
 
 
