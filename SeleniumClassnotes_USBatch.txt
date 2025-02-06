@@ -489,6 +489,136 @@ public class VerifyLandingPage {
 }
 
 
+Todays Session Implementation
+-------------------------------
+
+package testcases;
+
+import java.io.IOException;
+import java.time.Duration;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import browserImplementation.BrowserConfig;
+import objectRepository.ObjectRepositoryReader;
+import pages.LandingPage;
+
+public class LandingPageTest 
+{
+	BrowserConfig broconf;
+	WebDriver driver;
+	ObjectRepositoryReader or;
+	LandingPage lp;
+	
+	@BeforeMethod()
+	public void setUp() throws IOException
+	{
+		 broconf = new BrowserConfig();
+		 or = new ObjectRepositoryReader();
+		
+	}
+	
+	@Test
+	public void test_LandingPage() throws IOException, InterruptedException
+	{		
+		 driver = broconf.Launch_Chrome();
+		 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+		 driver.get(or.get_BaseURL());
+		 lp = new LandingPage(driver);
+		 
+		 lp.verify_CurrentURl(); // Verifying Current URL
+		 
+		 lp.verify_PageTitle(); // Verifying the Page Title
+		 
+		 lp.click_EntertheStore(); //Method Reference 
+		
+		 
+		 
+		 
+		 //driver.findElement(By.linkText(or.Click_EnterStore())); // ObjectRepository Reference
+		 
+		 //driver.findElement(By.linkText("Enter the Store")).click(); // Raw Code		 
+	}
+	
+	@AfterMethod
+	public void tearDown()
+	{
+		driver.quit();
+	}
+
+}
+
+
+Landing Page Class
+--------------------
+
+package pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
+import org.testng.Reporter;
+
+import objectRepository.ObjectRepositoryReader;
+
+public class LandingPage 
+{
+	WebDriver driver;
+	ObjectRepositoryReader or;
+	By enterStore = By.linkText("Enter the Store");
+	
+	public LandingPage(WebDriver driver)
+	{
+		this.driver = driver;
+	}
+	
+	public void verify_CurrentURl()
+	{
+		String actualURL = driver.getCurrentUrl();
+		String expectedURL = "https://petstore.octoperf.com/";
+		try
+		{
+			Assert.assertEquals(actualURL, expectedURL);
+			System.out.println("URL Matching TestCase Passed..");
+			Reporter.log("URL Matching TestCase Passed..");
+		}
+		catch(AssertionError e)
+		{
+			System.out.println("URL Not Matching Testcase Failed.."+e.getMessage());
+			Reporter.log("URL Not Matching Testcase Failed..");
+		}		
+	}
+	
+	public void click_EntertheStore()
+	{
+		 driver.findElement(enterStore).click();
+	}
+	
+	public void verify_PageTitle()
+	{
+		String actualTitle = driver.getTitle();
+		String expectedTitle = "JPetStore Demo";
+		try
+		{
+			Assert.assertEquals(actualTitle, expectedTitle);
+			System.out.println("Title Matching TestCase Passed..");
+			Reporter.log("Title Matching TestCase Passed..");
+		}
+		catch(AssertionError e)
+		{
+			System.out.println("Title Not Matching Testcase Failed.."+e.getMessage());
+			Reporter.log("Title Not Matching Testcase Failed..");
+		}		
+		
+	}
+
+}
+
+
+
 
 
 
