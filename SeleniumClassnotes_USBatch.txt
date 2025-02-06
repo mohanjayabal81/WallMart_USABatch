@@ -617,8 +617,222 @@ public class LandingPage
 
 }
 
+//*[@id="Content"]/h2
+
+//*[@id="Content"]/p[2]/sub
 
 
+Test Data Driven Framework Implementation using TestNG dataprovider
+-------------------------------------------
+
+package testcases;
+
+import java.io.IOException;
+import java.time.Duration;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import browserImplementation.BrowserConfig;
+import objectRepository.ObjectRepositoryReader;
+import pages.LandingPage;
+import pages.LoginPage;
+
+public class VerifyLogin 
+{
+	
+	BrowserConfig broconf;
+	WebDriver driver;
+	ObjectRepositoryReader or;
+	LandingPage lp;
+	LoginPage lop;
+	
+	@BeforeMethod()
+	public void setUp() throws IOException
+	{
+		 broconf = new BrowserConfig();
+		 or = new ObjectRepositoryReader();
+		 
+	}
+	
+	@Test(dataProvider = "dp")
+	public void test_LoginToSite(String username, String password)
+	{
+		 driver = broconf.Launch_Chrome();
+		 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+		 driver.get(or.get_BaseURL());
+		 lp = new LandingPage(driver);
+		 lp.click_EntertheStore();
+		 lop = new LoginPage(driver);
+		 lop.LoginToSite(username,password); // Calling the LoginPage Method
+		 driver.quit();
+	}
+	
+	@DataProvider
+	  public Object[][] dp() {
+	    return new Object[][] {
+	      new Object[] { "mohan", "mohan" },
+	      new Object[] {"mohan1", "mohan1"  },
+	      new Object[] {"mohan2", "mohan2"  },
+	      new Object[] {"mohan3", "mohan3"  },
+	    };
+	  }
+
+}
+-------------------------------------------------------------------------
+
+Data Driven Testing using Excel Implementation
+
+package excelImplementation;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class ExcelReader
+{
+	XSSFWorkbook workbook;
+	XSSFSheet sheet;
+	FileInputStream fis;
+	
+	public ExcelReader(String filepath) throws IOException  
+	{
+		try {
+			fis = new FileInputStream(filepath);
+			workbook = new XSSFWorkbook(fis);
+		}
+		catch(FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}		
+	}
+	public String getData(int sheetnumber,int row, int col)
+	{
+		sheet = workbook.getSheetAt(sheetnumber);
+		String data = sheet.getRow(row).getCell(col).getStringCellValue();
+		return data;
+	}
+	public int getRowCount(int sheetIndex)
+	{
+		int rowCount = workbook.getSheetAt(sheetIndex).getLastRowNum();
+		rowCount = rowCount + 1;
+		return rowCount;
+	}
+
+}
+
+-----------------------------------------------
+Excel Page Code Implementation 
+--------------------------------
+
+package pages;
+
+import java.io.IOException;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.Test;
+
+import excelImplementation.ExcelReader;
+
+public class LoginPageExcelImplementation
+{
+	WebDriver driver;
+	ExcelReader er;
+	public LoginPageExcelImplementation(WebDriver driver)
+	{
+		this.driver = driver;
+		
+	}
+	
+
+	public void LoginToSite() throws IOException
+	{
+		String path = "D:\\Clients\\KH\\Walmart\\SeleniumTestAutomation\\com.automation.framework\\DataSet\\TestDataSet.xlsx";
+		er = new ExcelReader(path);
+		int rowcount = er.getRowCount(0);
+		for(int i=0;i<rowcount;i++)
+		{
+		driver.findElement(By.linkText("Sign In")).click();
+		driver.findElement(By.name("username")).sendKeys(er.getData(0, i, 0));
+		System.out.println(er.getData(0, i, 0));
+		driver.findElement(By.name("password")).clear();
+		driver.findElement(By.name("password")).sendKeys(er.getData(0, i, 1));
+		System.out.println(er.getData(0, i, 1));
+		driver.findElement(By.name("signon")).click();
+		driver.findElement(By.linkText("Sign Out")).click();
+		}
+		
+	}
+
+}
+
+------------------------------------------------------------
+Excel SHeet Testcase Implementation 
+--------------------------------------
+
+package testcases;
+
+import java.io.IOException;
+import java.time.Duration;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import browserImplementation.BrowserConfig;
+import objectRepository.ObjectRepositoryReader;
+import pages.LandingPage;
+import pages.LoginPage;
+import pages.LoginPageExcelImplementation;
+
+public class VerifyLoginExcel 
+{
+	
+	BrowserConfig broconf;
+	WebDriver driver;
+	ObjectRepositoryReader or;
+	LandingPage lp;
+	LoginPageExcelImplementation lep;
+	
+	@BeforeMethod()
+	public void setUp() throws IOException
+	{
+		 broconf = new BrowserConfig();
+		 or = new ObjectRepositoryReader();
+		 
+	}
+	
+	@Test 
+	public void test_LoginToSite() throws IOException
+	{
+		 driver = broconf.Launch_Chrome();
+		 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+		 driver.get(or.get_BaseURL());
+		 lp = new LandingPage(driver);
+		 lp.click_EntertheStore();
+		 lep = new LoginPageExcelImplementation(driver);
+		 lep.LoginToSite();// Calling the LoginPage Method
+		  
+	}
+	
+	@AfterMethod
+	public void tearDown()
+	{
+		driver.quit();
+	}
+	
+	
+	 
+
+}
 
 
 
