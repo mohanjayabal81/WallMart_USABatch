@@ -828,11 +828,294 @@ public class VerifyLoginExcel
 	{
 		driver.quit();
 	}
+
+}
+
+Today's Plan
+------------
+
+Automation Framework using selenium 
+------------------------------------
+Extent Reporting Features (Summary Report, TestAuthor Report, PieChart Report)
+
+TestSuite Execution using XML files. 
+
+Katalon Studio 
+----------------
+Generative AI Testcase generating Tool. 
+
+How to execute the Cloud based Execution.
+
+Gen AI features
+-------------------
+
+<!-- https://mvnrepository.com/artifact/com.aventstack/extentreports -->
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports</artifactId>
+    <version>5.0.9</version>
+</dependency>
+----------------------------------
+
+package testcases;
+
+import static org.testng.Assert.assertTrue;
+
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
+public class ReporterTest 
+{
+	ExtentReports extent;
+	ExtentSparkReporter spark;
+	
+	@BeforeTest
+	public void SetUp()
+	{
+		extent = new ExtentReports();
+		spark = new ExtentSparkReporter("Reports/Spark.html");
+		extent.attachReporter(spark);
+	}
+	
+	@Test
+	public void testcase1()
+	{
+		ExtentTest test = extent.createTest("User Verify the Application URL...");
+		test.log(Status.PASS, "Testcase1 Passed");
+		test.assignAuthor("Mohan").assignDevice("Windows").assignDevice("Chrome");
+	}
+	
+	@Test
+	public void testcase2()
+	{
+		ExtentTest test = extent.createTest("User Verify the WelCome Message...");
+		try
+		{
+			assertTrue(false);
+		}
+		catch(AssertionError e)
+		{
+			test.log(Status.FAIL, "Testcase2 Failed.."+e.getMessage());
+			test.assignAuthor("Mohan").assignDevice("Mac").assignDevice("Safari");
+			System.out.println("Testcase2 Failed Block Executed..");
+		}
+		
+	}
+	
+	@Test
+	public void testcase3()
+	{
+		ExtentTest test = extent.createTest("User Verify the Title of WebPage...");
+		test.log(Status.PASS, "Testcase3 Passed");
+		test.assignAuthor("Mohan").assignDevice("Ubuntu").assignDevice("SunSolaris");
+	}
+	
+	@Test
+	public void testcase4()
+	{
+		ExtentTest test = extent.createTest("User Verify the Enter the Store URL...");
+		test.log(Status.PASS, "Testcase4 Passed");
+		test.assignAuthor("Mohan").assignDevice("Linux").assignDevice("FirFox");
+	}
+	
+	@Test
+	public void testcase5()
+	{
+		
+		ExtentTest test = extent.createTest("User Verify the CopyRight Msg...");
+		test.log(Status.PASS, "Testcase5 Passed");
+		test.assignAuthor("Mohan").assignDevice("Windows").assignDevice("Chrome");
+	}
+	
+	@AfterTest
+	public void afterTest()
+	{
+		extent.flush();
+	}
+
+}
+
+
+LandingPage
+-------------
+
+package testcases;
+
+import java.io.IOException;
+import java.time.Duration;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
+import browserImplementation.BrowserConfig;
+import objectRepository.ObjectRepositoryReader;
+import pages.LandingPage;
+
+public class LandingPageTest 
+{
+	BrowserConfig broconf;
+	WebDriver driver;
+	ObjectRepositoryReader or;
+	LandingPage lp;
+	ExtentReports extent;
+	ExtentSparkReporter spark;
+	
+	
+
+	@BeforeTest
+	public void SetUp()
+	{
+		extent = new ExtentReports();
+		spark = new ExtentSparkReporter("Reports/LandingPage.html");
+		extent.attachReporter(spark);
+	}
+	
+	@BeforeMethod()
+	public void setUp() throws IOException
+	{
+		 broconf = new BrowserConfig();
+		 or = new ObjectRepositoryReader();		
+	}
+	
+	@Test
+	public void test_LandingPage() throws IOException, InterruptedException
+	{		
+		 driver = broconf.Launch_Chrome();
+		 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+		 driver.get(or.get_BaseURL());
+		 lp = new LandingPage(driver);
+		 
+		 lp.verify_CurrentURl(); // Verifying Current URL
+		 ExtentTest test = extent.createTest("User Verify the LandingPage...");
+		 test.log(Status.PASS, "VerifyLanding Page Testcase Passed");
+		 test.assignAuthor("Mohan").assignDevice("Windows").assignDevice("Chrome");
+		 
+		 lp.verify_PageTitle(); // Verifying the Page Title
+		 
+		 lp.verify_WelcomeMsg();
+		 
+		 lp.Verify_CopyRightMsg();
+		 
+		 lp.click_EntertheStore(); //Method Reference 	 
+		 
+	}
+	
+	@AfterMethod
+	public void tearDown()
+	{
+		driver.quit();
+	}
+	
+	@AfterTest
+	public void afterTest()
+	{
+		extent.flush();
+	}
+
+}
+
+-------------------------------------------------------------
+
+package testcases;
+
+import java.io.IOException;
+import java.time.Duration;
+
+import org.openqa.selenium.WebDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+
+import browserImplementation.BrowserConfig;
+import objectRepository.ObjectRepositoryReader;
+import pages.LandingPage;
+import pages.LoginPage;
+import pages.LoginPageExcelImplementation;
+
+public class VerifyLoginExcel 
+{
+	
+	BrowserConfig broconf;
+	WebDriver driver;
+	ObjectRepositoryReader or;
+	LandingPage lp;
+	LoginPageExcelImplementation lep;
+	
+	ExtentReports extent;
+	ExtentSparkReporter spark;
+	
+	@BeforeTest
+	public void SetUp()
+	{
+		extent = new ExtentReports();
+		spark = new ExtentSparkReporter("Reports/DDT_ExcelReport.html");
+		extent.attachReporter(spark);
+	}
+	
+	
+	@BeforeMethod()
+	public void setUp() throws IOException
+	{
+		 broconf = new BrowserConfig();
+		 or = new ObjectRepositoryReader();		 
+	}
+	
+	@Test 
+	public void test_LoginToSite() throws IOException
+	{
+		 ExtentTest test = extent.createTest("DataDriven Testing Using Excel...");
+		 test.log(Status.PASS, "LoginToSite Testcase Passed");
+		 test.assignAuthor("Mohan").assignDevice("Windows").assignDevice("Chrome");
+		 driver = broconf.Launch_Chrome();
+		 driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
+		 driver.get(or.get_BaseURL());
+		 lp = new LandingPage(driver);
+		 lp.click_EntertheStore();
+		 lep = new LoginPageExcelImplementation(driver);
+		 lep.LoginToSite();// Calling the LoginPage Method		  
+	}
+	
+	@AfterMethod
+	public void tearDown()
+	{
+		driver.quit();
+	}
+	
+	@AfterTest
+	public void afterTest()
+	{
+		extent.flush();
+	}
 	
 	
 	 
 
 }
+
+
 
 
 
